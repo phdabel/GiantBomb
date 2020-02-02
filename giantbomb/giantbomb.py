@@ -1,9 +1,16 @@
-import urllib2
 from collections import Iterable
 
 
 __author__ = "Leandro Voltolino <xupisco@gmail.com>"
 __version__ = "0.7"
+
+try:
+    import urllib2
+except ImportError:
+    try:
+        import urllib.request as urllib2
+    except:
+        raise Exception("GiantBomb wrapper requires the urllib library ot work.")
 
 try:
     import simplejson
@@ -28,7 +35,7 @@ class GiantBombError(Exception):
 class Api:
     def __init__(self, api_key, user_agent):
         self.api_key = api_key
-        self.base_url = 'http://api.giantbomb.com/'
+        self.base_url = 'https://giantbomb.com/api'
         self.headers = {'User-Agent' : user_agent}
 
     @staticmethod
