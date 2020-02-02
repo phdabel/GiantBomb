@@ -1,5 +1,7 @@
+import sys
 from collections import Iterable
-
+if sys.version_info[0] >= 3:
+    unicode = str
 
 __author__ = "Leandro Voltolino <xupisco@gmail.com>"
 __version__ = "0.7"
@@ -33,10 +35,11 @@ class GiantBombError(Exception):
 
 
 class Api:
+
     def __init__(self, api_key, user_agent):
         self.api_key = api_key
         self.base_url = 'https://giantbomb.com/api'
-        self.headers = {'User-Agent' : user_agent}
+        self.headers = {'User-Agent': user_agent}
 
     @staticmethod
     def defaultRepr(obj):
