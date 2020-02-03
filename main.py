@@ -49,7 +49,7 @@ while offset < total:
             time.sleep(1)
             ct = ct + 1
             if ct > 200:
-                estimated_time_left = (1800 - (timeit.timeit()-start))
+                estimated_time_left = 60 #(1800 - (timeit.timeit()-start))
                 logging.warning("Sleeping %s seconds given rate limit." % estimated_time_left)
                 time.sleep(max(1, estimated_time_left))
                 ct = 1
