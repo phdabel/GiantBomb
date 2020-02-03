@@ -35,7 +35,7 @@ limit = x['limit']
 ct = 0
 logging.info("=============================================================")
 logging.info("Crawling")
-logging.info("Date: %d" % datetime.datetime.today().isoformat())
+logging.info("Date: %s" % datetime.datetime.today().isoformat())
 logging.info("Resource: games")
 
 while offset < total:
