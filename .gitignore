@@ -1,6 +1,7 @@
 *.pyc
 .DS_Store
 _matrix/
+.idea/
 .svn
 *.db
 .project
