@@ -50,6 +50,8 @@ while offset < total:
                 time.sleep(max(1, estimated_time_left))
                 ct = 1
                 g = gb.get("/game/" + game["guid"])
+            else:
+                g = gb.get("/game/" + game["guid"])
 
             while g["error"] != 'OK':
                 logging.warning("Sleeping for 60s before trying again.")
