@@ -5,6 +5,7 @@ from pymongo import MongoClient
 from pymongo.errors import DuplicateKeyError
 import logging
 import time
+import timeit
 
 logging.basicConfig(filename='games_giantbomb.log', level=logging.DEBUG)
 
@@ -31,16 +32,25 @@ x = gb.get("/games", {})
 total = x['number_of_total_results']
 offset = 0
 limit = x['limit']
+ct = 0
 
 while offset < total:
     # do anything with x and perform another request with
+    start = timeit.timeit()
     for game in x['results']:
         logging.info("Getting info of the id %s, game: %s" % (game["id"], game["name"]))
-        tmp = games.find_one({"_id": game['id'],
-                              'date_last_updated': {"$lte": game['date_last_updated']}})
+        tmp = None
+        tmp = games.find_one({"_id": game['id']})
         if tmp is None:
             time.sleep(1)
-            g = gb.get("/game/" + game["guid"])
+            ct = ct + 1
+            if ct > 200:
+                estimated_time_left = (1800 - (timeit.timeit()-start))
+                logging.warning("Sleeping %s seconds given rate limit." % estimated_time_left)
+                time.sleep(max(1, estimated_time_left))
+                ct = 1
+                g = gb.get("/game/" + game["guid"])
+
             while g["error"] != 'OK':
                 logging.warning("Sleeping for 60s before trying again.")
                 time.sleep(60)
