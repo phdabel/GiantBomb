@@ -33,6 +33,10 @@ total = x['number_of_total_results']
 offset = 0
 limit = x['limit']
 ct = 0
+logging.info("=============================================================")
+logging.info("Crawling")
+logging.info("Date: %d" % datetime.datetime.today().isoformat())
+logging.info("Resource: games")
 
 while offset < total:
     # do anything with x and perform another request with
@@ -80,3 +84,7 @@ while offset < total:
                     pass
     offset = offset + limit
     x = gb.get("/games", dict({"offset": offset}))
+
+logging.info("Crawling ended")
+logging.info("Date: %d" % datetime.datetime.today().isoformat())
+logging.info("=============================================================")
