@@ -68,20 +68,19 @@ while offset < total:
                 g['results']['date_added'] = format_date(g['results']['date_added'])
                 g['results']['date_last_updated'] = format_date(g['results']['date_last_updated'])
                 g['results']['original_release_date'] = format_date(g['results']['original_release_date'])
-                try:
-                    games.insert_one(g["results"])
-                except DuplicateKeyError:
-                    logging.warning("Trying to insert existing document id %s" % (g['results']['_id']))
-                    tmp = games.find_one({"_id": g['results']['id'],
-                                          'date_last_updated': {"$lt": g['results']['date_last_updated']}})
-                    if tmp is not None:
-                        logging.warning("Removing old document id %s." % g['results']['id'])
-                        games.delete_one({"_id": g['results']['id']})
-                        logging.warning("Inserting updated document id %s." % g['results']['id'])
-                        games.insert_one(g["results"])
-                    else:
-                        logging.info("There is no update for document id %s." % g['results']['id'])
-                    pass
+                games.insert_one(g["results"])
+        else:
+            logging.warning("Trying to insert existing document id %s" % (g['results']['_id']))
+            tmp = games.find_one({"_id": g['results']['id'],
+                                  'date_last_updated': {"$lt": g['results']['date_last_updated']}})
+            if tmp is not None:
+                logging.warning("Removing old document id %s." % g['results']['id'])
+                games.delete_one({"_id": g['results']['id']})
+                logging.warning("Inserting updated document id %s." % g['results']['id'])
+                games.insert_one(g["results"])
+            else:
+                logging.info("There is no update for document id %s." % g['results']['id'])
+            pass
     offset = offset + limit
     x = gb.get("/games", dict({"offset": offset}))
 
