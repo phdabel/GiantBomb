@@ -1,16 +1,31 @@
 import giantbomb.giantbomb as giantbomb
-import os
+import os, sys, getopt
 import datetime
 from pymongo import MongoClient
-from pymongo.errors import DuplicateKeyError
 import logging
 import time
 import timeit
 
+def format_date(date_time):
+    if date_time is None:
+        return None
+    return datetime.datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S")
+
+
+argv = sys.argv[1:]
+opts, args = getopt.getopt(argv, ":o:", ['offset'])
+
+if opts.__len__() != 0:
+    if opts[0][0] == '-o':
+        offset = int(opts[0][1])
+    else:
+        offset = 0
+else:
+    offset = 0
+
+
 logging.basicConfig(filename='games_giantbomb.log', level=logging.DEBUG)
-
 gb = giantbomb.Api(os.environ['API_KEY'], os.environ['USER_AGENT'])
-
 client = MongoClient(os.environ["MONGODB_HOST"],
                      username=os.environ['MONGODB_USER'],
                      password=os.environ['MONGODB_PASS'],
@@ -20,17 +35,9 @@ client = MongoClient(os.environ["MONGODB_HOST"],
 db = client[os.environ['MONGODB_DB']]
 games = db["games"]
 
-
-def format_date(date_time):
-    if date_time is None:
-        return None
-    return datetime.datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S")
-
-
-x = gb.get("/games", {})
+x = gb.get("/games", {"offset": offset})
 
 total = x['number_of_total_results']
-offset = 0
 limit = x['limit']
 ct = 0
 logging.info("=============================================================")
@@ -70,7 +77,8 @@ while offset < total:
                 g['results']['original_release_date'] = format_date(g['results']['original_release_date'])
                 games.insert_one(g["results"])
         else:
-            logging.warning("Trying to insert existing document id %s" % (g['results']['_id']))
+            logging.warning("Trying to insert existing document id %s" % (tmp['_id']))
+            g = gb.get("/game/" + tmp["guid"])
             tmp = games.find_one({"_id": g['results']['id'],
                                   'date_last_updated': {"$lt": g['results']['date_last_updated']}})
             if tmp is not None:
