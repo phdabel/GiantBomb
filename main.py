@@ -78,16 +78,16 @@ while offset < total:
                 games.insert_one(g["results"])
         else:
             logging.warning("Trying to insert existing document id %s" % (tmp['_id']))
-            g = gb.get("/game/" + tmp["guid"])
-            tmp = games.find_one({"_id": g['results']['id'],
-                                  'date_last_updated': {"$lt": g['results']['date_last_updated']}})
+            tmp = games.find_one({"_id": game['id'],
+                                  'date_last_updated': {"$lt": game['date_last_updated']}})
             if tmp is not None:
+                g = gb.get("/game/" + tmp["guid"])
                 logging.warning("Removing old document id %s." % g['results']['id'])
                 games.delete_one({"_id": g['results']['id']})
                 logging.warning("Inserting updated document id %s." % g['results']['id'])
                 games.insert_one(g["results"])
             else:
-                logging.info("There is no update for document id %s." % g['results']['id'])
+                logging.info("There is no update for document id %s." % game['id'])
             pass
     offset = offset + limit
     x = gb.get("/games", dict({"offset": offset}))
