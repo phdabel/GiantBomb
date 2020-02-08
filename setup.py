@@ -28,5 +28,5 @@ setup(
         "Operating System :: OS Independent",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "License :: OSI Approved :: MIT License",
-    ],
+    ], install_requires=['pymongo']
 )

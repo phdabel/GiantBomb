@@ -6,6 +6,7 @@ import logging
 import time
 import timeit
 
+
 def format_date(date_time):
     if date_time is None:
         return None
@@ -22,7 +23,6 @@ if opts.__len__() != 0:
         offset = 0
 else:
     offset = 0
-
 
 logging.basicConfig(filename='games_giantbomb.log', level=logging.DEBUG)
 gb = giantbomb.Api(os.environ['API_KEY'], os.environ['USER_AGENT'])
@@ -56,7 +56,7 @@ while offset < total:
             time.sleep(1)
             ct = ct + 1
             if ct > 200:
-                estimated_time_left = 60 #(1800 - (timeit.timeit()-start))
+                estimated_time_left = 60  # (1800 - (timeit.timeit()-start))
                 logging.warning("Sleeping %s seconds given rate limit." % estimated_time_left)
                 time.sleep(max(1, estimated_time_left))
                 ct = 1
