@@ -7,10 +7,17 @@ import time
 import timeit
 
 
-def format_date(date_time):
+def format_date2(date_time):
     if date_time is None:
         return None
     return datetime.datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S")
+
+
+def format_date(date_time):
+    if date_time is None:
+        return None
+    return datetime.datetime.strptime(date_time, "%Y-%m-%d")
+    #return datetime.datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S")
 
 
 argv = sys.argv[1:]
@@ -72,8 +79,8 @@ while offset < total:
             if g["error"] == 'OK':
                 logging.info("Saving game %s" % (game["guid"]))
                 g['results']['_id'] = g['results']['id']
-                g['results']['date_added'] = format_date(g['results']['date_added'])
-                g['results']['date_last_updated'] = format_date(g['results']['date_last_updated'])
+                g['results']['date_added'] = format_date2(g['results']['date_added'])
+                g['results']['date_last_updated'] = format_date2(g['results']['date_last_updated'])
                 g['results']['original_release_date'] = format_date(g['results']['original_release_date'])
                 games.insert_one(g["results"])
         else:
